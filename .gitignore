@@ -6,7 +6,8 @@
 /nnUNet-instalacion
 /enviroment-tumores
 #images/lumiere/*
-/images
+images/*
+!images/fleni/
 #/proyecto_base
 proyecto_base/*
 #!proyecto_base/noe/
