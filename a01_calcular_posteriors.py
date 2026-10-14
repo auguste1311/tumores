@@ -9,7 +9,7 @@ import subprocess
 from pathlib import Path
 
 
-def segmentar_imagenes_wholetumor(input_dir: str, output_dir: str, identificador: str, combinacion: str) -> None:
+def obtener_posterior_wholetumor(input_dir: str, output_dir: str, identificador: str, combinacion: str) -> None:
     """
     Identifica imagenes de pacientes en un directorio de entrada y ejecuta 
     el segmentador mri_tumorsynth_posteriors mediante bash para cada paciente, permitiendo
@@ -227,91 +227,25 @@ def segmentar_imagenes_wholetumor(input_dir: str, output_dir: str, identificador
             directorio_destino = ruta_salida / f"NN-0{xx}" / f"Vista_{zz}" / "t1"
             directorio_destino.mkdir(parents=True, exist_ok=True)
             argumento_o = directorio_destino / f"NN-0{xx}.nii.gz"
+            #argumento_o = directorio_destino / f"NN-0{xx}_prob_label18.nii.gz"
 
-            if argumento_o.exists():
-                print(f"El archivo {argumento_o.name} en Vista_{zz} ya existe. Saltando.")
-                continue
-
+            # if argumento_o.exists():
+            #     print(f"El archivo {argumento_o.name} en Vista_{zz} ya existe. Saltando.")
+            #     continue
+            
             comando = [
-                "mri_tumorsynth_posteriors",
+                "bash",
+                "mri_TumorSynth_posteriors",
                 "--i", str(archivo),
                 "--o", str(argumento_o),
                 "--wholetumor"
             ]
 
-            print(f"Comenzando segmentacion wholetumor para: NN-0{xx} (Vista_{zz})...")
+            print(f"Comenzando posteriors wholetumor para: NN-0{xx} (Visita_{zz})...")
             subprocess.run(comando, check=True)
-            print(f"Se segmento correctamente con wholetumor para: NN-0{xx} (Vista_{zz})!")
-            print(f"Hay tumor: {hay_tumor(argumento_o)}")
+            print(f"Se calcularon las posteriors correctamente con wholetumor para: NN-0{xx} (Visita_{zz})!")
+            #print(f"Hay tumor: {hay_tumor(argumento_o)}")
             
-
-def recortar_roi(dir_wholetumor: str, dir_t1ce: str, output_dir: str, identificador:str) -> None:
-    """
-    Identifica imagenes en un primer directorio, busca su correspondencia en un 
-    segundo directorio y ejecuta el comando fslmaths mediante bash para cada par.
-
-    Parametros de entrada:
-    dir_wholetumor (str): Ruta de la carpeta con archivos formato 'fleni_XXX.nii.gz'.
-    dir_t1ce (str): Ruta de la carpeta con archivos formato 'FLENI_XXX_0001.nii.gz'.
-    output_dir (str): Ruta de la carpeta donde se guardaran los archivos resultantes.
-
-    Parametros de salida:
-    None
-    """
-    ruta_entrada_1 = Path(dir_wholetumor)
-    ruta_entrada_2 = Path(dir_t1ce)
-    ruta_salida = Path(output_dir)
-    
-    ruta_salida.mkdir(parents=True, exist_ok=True)
-
-    if identificador == "FLENI":
-        for archivo_1 in ruta_entrada_1.glob("fleni_*.nii.gz"):
-            partes_nombre = archivo_1.name.split('_')
-            
-            if len(partes_nombre) > 1:
-                id_paciente = partes_nombre[1].split('.')[0]
-                
-                if len(id_paciente) == 3 and id_paciente.isdigit():
-                    archivo_2 = ruta_entrada_2 / f"FLENI_{id_paciente}_0001.nii.gz"
-                    
-                    if archivo_2.exists():
-                        archivo_salida = ruta_salida / f"fleni_{id_paciente}.nii.gz"
-                        
-                        comando = [
-                            "fslmaths",
-                            str(archivo_1),
-                            "-thr", "17.5",
-                            "-uthr", "18.5",
-                            "-bin",
-                            "-mul", str(archivo_2),
-                            str(archivo_salida)
-                        ]
-                        
-                        subprocess.run(comando, check=True)
-    elif identificador == "LUMIERE":
-        for archivo_1 in ruta_entrada_1.glob("*.nii.gz"):
-            nombre_sin_ext = archivo_1.name.replace(".nii.gz", "")
-            partes_nombre = nombre_sin_ext.split('_')
-            
-            if len(partes_nombre) >= 2:
-                zzz_yyy = f"{partes_nombre[-2]}_{partes_nombre[-1]}"
-                archivos_2 = list(ruta_entrada_2.glob(f"*{zzz_yyy}_0001.nii.gz"))
-                
-                if archivos_2:
-                    archivo_2 = archivos_2[0]
-                    archivo_salida = ruta_salida / archivo_1.name
-                    
-                    comando = [
-                        "fslmaths",
-                        str(archivo_1),
-                        "-thr", "17.5",
-                        "-uthr", "18.5",
-                        "-bin",
-                        "-mul", str(archivo_2),
-                        str(archivo_salida)
-                    ]
-                    
-                    subprocess.run(comando, check=True)
 
 def segmentar_roi_innertumor(dir_roi: str, dir_innertumor: str, identificador:str) -> None:
     """
@@ -357,7 +291,7 @@ def segmentar_roi_innertumor(dir_roi: str, dir_innertumor: str, identificador:st
                         subprocess.run(comando, check=True)
 
                     except subprocess.CalledProcessError as e:
-                        print(f"Saltando paciente {input_path} por error en TumorSynth.")
+                        print(f"Saltando paciente {archivo.name} por error en TumorSynth.")
                         continue
     elif identificador == "LUMIERE":
         for archivo in ruta_entrada.glob("*.nii.gz"):
@@ -388,13 +322,6 @@ def segmentar_roi_innertumor(dir_roi: str, dir_innertumor: str, identificador:st
                 
 
 if __name__ == "__main__":
-    #segmentar_imagenes_wholetumor("proyecto_base/data/FLENI/glioma_bajo_anonimizado/imagesTs","images/fleni/glioma_bajo_anonimizado/labelsTS-wholetumor", "FLENI", "a")
-    #recortar_roi("images/fleni/glioma_bajo_anonimizado/labelsTS-wholetumor","proyecto_base/data/FLENI/glioma_bajo_anonimizado/imagesTs","images/fleni/glioma_bajo_anonimizado/labelsTS-roi")
-    #segmentar_roi_innertumor("images/fleni/glioma_bajo_anonimizado/labelsTS-roi","images/fleni/glioma_bajo_anonimizado/labelsTS-innertumor")
-    
-    #segmentar_imagenes_wholetumor("proyecto_base/LUMIERE/imaging_processed/images","images/lumiere/labelsTS-wholetumor", "LUMIERE", "a")
-    #recortar_roi("images/lumiere/labelsTS-wholetumor","proyecto_base/LUMIERE/imaging_processed/images","images/lumiere/labelsTS-roi", "LUMIERE")
-    #segmentar_roi_innertumor("images/lumiere/labelsTS-roi","images/lumiere/labelsTS-innertumor","LUMIERE")
 
     for combinacion in ["t1"]:
         
@@ -402,7 +329,7 @@ if __name__ == "__main__":
         #carpeta_output_roi = f"images/fleni/glioma_alto_anonimizado/{combinacion}/labelsTS-roi"
         #carpeta_output_innertumor = f"images/fleni/glioma_alto_anonimizado/{combinacion}/labelsTS-innertumor"
     
-        segmentar_imagenes_wholetumor("images/voluntarios-raw",carpeta_output_wholetumor, "VOLUNTARIOS", combinacion)
+        obtener_posterior_wholetumor("images/voluntarios-raw",carpeta_output_wholetumor, "VOLUNTARIOS", combinacion)
 
 
         #recortar_roi(carpeta_output_wholetumor,"proyecto_base/data/FLENI/glioma_alto_anonimizado/imagesTs",carpeta_output_roi, "FLENI")

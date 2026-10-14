@@ -8,6 +8,8 @@
 #images/lumiere/*
 images/*
 !images/fleni/
+!images/pruebas/
+!images/voluntarios-segmentated/
 #/proyecto_base
 proyecto_base/*
 #!proyecto_base/noe/
