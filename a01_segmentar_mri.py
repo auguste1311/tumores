@@ -398,11 +398,11 @@ if __name__ == "__main__":
 
     for combinacion in ["t1"]:
         
-        carpeta_output_wholetumor = f"images/voluntarios-segmentated/"
+        carpeta_output_wholetumor = f"images/fleni/glioma_bajo_anonimizado/{combinacion}/labelsTS-wholetumor"
         #carpeta_output_roi = f"images/fleni/glioma_alto_anonimizado/{combinacion}/labelsTS-roi"
         #carpeta_output_innertumor = f"images/fleni/glioma_alto_anonimizado/{combinacion}/labelsTS-innertumor"
     
-        segmentar_imagenes_wholetumor("images/voluntarios-raw",carpeta_output_wholetumor, "VOLUNTARIOS", combinacion)
+        segmentar_imagenes_wholetumor("proyecto_base/data/FLENI/glioma_bajo_anonimizado/imagesTs",carpeta_output_wholetumor, "FLENI", combinacion)
 
 
         #recortar_roi(carpeta_output_wholetumor,"proyecto_base/data/FLENI/glioma_alto_anonimizado/imagesTs",carpeta_output_roi, "FLENI")

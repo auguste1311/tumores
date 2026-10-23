@@ -125,7 +125,8 @@ for data_input in $(echo "$list_files" | tr ',' '\n'); do
     show_help -1
   fi
   mkdir -p ${working_dir}/nnUNet_raw_data_base/nnUNet_raw_data/Task${TASK}_${TASK_NAME}/ImagesTs${n}
-  extension="${data_input#*.}"
+  nombre_archivo=$(basename "${data_input}")
+  extension="${nombre_archivo#*.}"
   cp ${data_input} ${working_dir}/nnUNet_raw_data_base/nnUNet_raw_data/Task${TASK}_${TASK_NAME}/ImagesTs${n}/input_0000.${extension}
   dir_list="${dir_list}${working_dir}/nnUNet_raw_data_base/nnUNet_raw_data/Task${TASK}_${TASK_NAME}/ImagesTs${n},"
   echo "INPUT FILE ${n}: ${data_input} copied at ${working_dir}/nnUNet_raw_data_base/nnUNet_raw_data/Task${TASK}_${TASK_NAME}/ImagesTs${n}/input_0000.${extension}"

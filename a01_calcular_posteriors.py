@@ -178,21 +178,32 @@ def obtener_posterior_wholetumor(input_dir: str, output_dir: str, identificador:
                 
                 argumento_i = ",".join(str(img) for img in imgs_requeridas)
                 argumento_o = ruta_destino_final / f"{nombre_carpeta}.nii.gz"
+                archivo_final = ruta_destino_final / f"{nombre_carpeta}_prob_label18.nii.gz"
 
-                if argumento_o.exists():
-                    print(f"El archivo {argumento_o.name} ya existe. Saltando.")
+                if archivo_final.exists():
+                    print(f"El archivo {archivo_final.name} ya existe. Saltando.")
                     continue
 
                 comando = [
-                    "mri_tumorsynth_posteriors",
+                    "bash",
+                    "mri_TumorSynth_posteriors",
                     "--i", argumento_i,
                     "--o", str(argumento_o),
                     "--wholetumor"
                 ]
 
-                print(f"Comenzando segmentacion wholetumor para: {nombre_carpeta}...")
-                subprocess.run(comando, check=True)
-                print(f"Se segmentó correctamente con wholetumor para: {nombre_carpeta}!")
+                try:
+                    print(f"Comenzando calculo posteriors wholetumor para: {nombre_carpeta}...")
+                    subprocess.run(comando, check=True)
+                except subprocess.CalledProcessError as e:
+                    print(f"EL SCRIPT FALLÓ CON CÓDIGO {e.returncode}")
+                    print("--- LOG DE SALIDA ESTÁNDAR (STDOUT) ---")
+                    print(e.stdout)
+                    print("--- LOG DE ERROR (STDERR) ---")
+                    print(e.stderr)
+                    break
+                
+                print(f"Se calcularon las posteriors correctamente con wholetumor para: {nombre_carpeta}!")
                 #print(f"Hay tumor: {hay_tumor(argumento_o)}")
 
     elif identificador == "VOLUNTARIOS":
@@ -327,17 +338,17 @@ def segmentar_roi_innertumor(dir_roi: str, dir_innertumor: str, identificador:st
 
 if __name__ == "__main__":
 
-    for glioma in ["glioma_bajo_anonimizado","glioma_alto_anonimizado"]:
+    #for glioma in ["glioma_bajo_anonimizado","glioma_alto_anonimizado"]:
 
-        for combinacion in ["t1","t1c-t2-flair"]:
+    for combinacion in ["t1","t1-flair"]:
 
-            carpeta_input = f"proyecto_base/data/FLENI/{glioma}/imagesTs/"
-            carpeta_output_wholetumor = f"images/fleni/{glioma}/labelsTS-innertumor/{combinacion}/labelesTS-wholetumor/"
-            #carpeta_output_roi = f"images/fleni/glioma_alto_anonimizado/{combinacion}/labelsTS-roi"
-            #carpeta_output_innertumor = f"images/fleni/glioma_alto_anonimizado/{combinacion}/labelsTS-innertumor"
-        
-            obtener_posterior_wholetumor(carpeta_input, carpeta_output_wholetumor, "FLENI", combinacion)
+        carpeta_input = f"../agonzalez-venula-central/imagenes/nifti/"
+        carpeta_output_wholetumor = f"images/cvs/"
+        #carpeta_output_roi = f"images/fleni/glioma_alto_anonimizado/{combinacion}/labelsTS-roi"
+        #carpeta_output_innertumor = f"images/fleni/glioma_alto_anonimizado/{combinacion}/labelsTS-innertumor"
+    
+        obtener_posterior_wholetumor(carpeta_input, carpeta_output_wholetumor, "VENULA", combinacion)
 
 
-            #recortar_roi(carpeta_output_wholetumor,"proyecto_base/data/FLENI/glioma_alto_anonimizado/imagesTs",carpeta_output_roi, "FLENI")
-            #segmentar_roi_innertumor(carpeta_output_roi,carpeta_output_innertumor,"FLENI")
+        #recortar_roi(carpeta_output_wholetumor,"proyecto_base/data/FLENI/glioma_alto_anonimizado/imagesTs",carpeta_output_roi, "FLENI")
+        #segmentar_roi_innertumor(carpeta_output_roi,carpeta_output_innertumor,"FLENI")

@@ -21,8 +21,8 @@ def generar_histograma_mascara(dir_input, dir_output):
     
     imagen = nib.load(dir_input)
     datos = imagen.get_fdata()
-    
-    valores = datos[datos > 0.01]
+
+    valores = datos[datos >0]
     
     plt.figure(figsize=(8, 6))
     plt.hist(valores, bins=50, color='indigo', alpha=0.8)
@@ -30,6 +30,7 @@ def generar_histograma_mascara(dir_input, dir_output):
     plt.xlabel('Valor de Probabilidad')
     plt.ylabel('Frecuencia')
     plt.grid(True, alpha=0.3)
+    plt.yscale("log")
 
     nombre_base = os.path.basename(dir_input).replace('.nii.gz', '_histograma.png')
     ruta_salida = os.path.join(dir_output, nombre_base)
@@ -46,7 +47,7 @@ if __name__ == "__main__":
     # generar_histograma_mascara("images/pruebas/roi_fleni_000_0001_prob_class1.nii.gz","images/pruebas/")
     # generar_histograma_mascara("images/pruebas/roi_fleni_000_0001_prob_class2.nii.gz","images/pruebas/")
     # generar_histograma_mascara("images/pruebas/roi_fleni_000_0001_prob_class3.nii.gz","images/pruebas/")
-    for i in range(1,10):
-        source = f"images/voluntarios-segmentated/NN-00{i}/Vista_1A/t1/NN-00{i}_prob_label18.nii.gz"
-        dst = f"images/pruebas/voluntarios/NN-00{i}/Vista_1A/t1/"
+    for i in range(1,21):
+        source = f"images/cvs/NN-00{i}/t1/NN-00{i}_prob_label18.nii.gz"
+        dst = f"images/cvs/NN-00{i}/t1/"
         generar_histograma_mascara(source,dst)
