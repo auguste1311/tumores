@@ -12,9 +12,9 @@ images/*
 !images/voluntarios-segmentated/
 !images/cvs/
 images/cvs/*
-!images/cvs/NN-00[1-9]/
-images/cvs/NN-00[1-9]/*
-!images/cvs/NN-00[1-9]/t1/
+!images/cvs/NN-00[1-20]/
+images/cvs/NN-00[1-20]/*
+!images/cvs/NN-00[1-20]/t1/
 #!images/cvs/NN-003/
 #images/cvs/NN-003/*
 #!images/cvs/NN-003/t1/
