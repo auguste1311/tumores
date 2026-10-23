@@ -10,7 +10,12 @@ images/*
 !images/fleni/
 !images/pruebas/
 !images/voluntarios-segmentated/
-#!images/cvs/
+!images/cvs/
+images/cvs/*
+!images/cvs/NN-001/
+images/cvs/NN-001/*
+!images/cvs/NN-001/t1/
+
 #/proyecto_base
 proyecto_base/*
 #!proyecto_base/noe/
