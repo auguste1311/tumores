@@ -239,13 +239,13 @@ def obtener_posterior_wholetumor(input_dir: str, output_dir: str, identificador:
             if zz not in visitas_validas:
                 continue
 
-            directorio_destino = ruta_salida / f"NN-0{xx}" / f"Vista_{zz}" / "t1"
+            directorio_destino = ruta_salida / f"NN-0{xx}" / f"Visita_{zz}" / "t1"
             directorio_destino.mkdir(parents=True, exist_ok=True)
             argumento_o = directorio_destino / f"NN-0{xx}.nii.gz"
             archivo_final = directorio_destino / f"NN-0{xx}_prob_label18.nii.gz"
 
             if archivo_final.exists():
-                print(f"El archivo {archivo_final.name} en Vista_{zz} ya existe. Saltando.")
+                print(f"El archivo {archivo_final.name} en Visita_{zz} ya existe. Saltando.")
                 continue
             
             comando = [

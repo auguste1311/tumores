@@ -22,11 +22,11 @@ def detectar_tumor_segmentaciones(dir_input, dir_output):
     if directorio_base:
         os.makedirs(directorio_base, exist_ok=True)
 
-    vistas = ["Vista_1A", "Vista_1B", "Vista_2A", "Vista_2B"]
+    visitas = ["Visita_1A", "Visita_1B", "Visita_2A", "Visita_2B"]
 
     with open(dir_output, mode='w', newline='', encoding='utf-8') as archivo_csv:
         escritor_csv = csv.writer(archivo_csv, delimiter=';')
-        escritor_csv.writerow(["paciente", "Vista_1A", "Vista_1B", "Vista_2A", "Vista_2B"])
+        escritor_csv.writerow(["paciente", "Visita_1A", "Visita_1B", "Visita_2A", "Visita_2B"])
 
         if not os.path.exists(dir_input):
             return
@@ -37,9 +37,9 @@ def detectar_tumor_segmentaciones(dir_input, dir_output):
                 ruta_paciente = os.path.join(dir_input, nombre_carpeta)
                 fila = [nombre_carpeta]
 
-                for vista in vistas:
-                    print(f"analizando vista: {vista}")
-                    ruta_imagen = os.path.join(ruta_paciente, vista, "t1", f"{nombre_carpeta}.nii.gz")
+                for visita in visitas:
+                    print(f"analizando visita: {visita}")
+                    ruta_imagen = os.path.join(ruta_paciente, visita, "t1", f"{nombre_carpeta}.nii.gz")
                     
                     if os.path.isfile(ruta_imagen):
                         fila.append(hay_tumor(ruta_imagen))

@@ -224,12 +224,12 @@ def segmentar_imagenes_wholetumor(input_dir: str, output_dir: str, identificador
             if zz not in visitas_validas:
                 continue
 
-            directorio_destino = ruta_salida / f"NN-0{xx}" / f"Vista_{zz}" / "t1"
+            directorio_destino = ruta_salida / f"NN-0{xx}" / f"Visita_{zz}" / "t1"
             directorio_destino.mkdir(parents=True, exist_ok=True)
             argumento_o = directorio_destino / f"NN-0{xx}.nii.gz"
 
             if argumento_o.exists():
-                print(f"El archivo {argumento_o.name} en Vista_{zz} ya existe. Saltando.")
+                print(f"El archivo {argumento_o.name} en Visita_{zz} ya existe. Saltando.")
                 continue
 
             comando = [
@@ -239,9 +239,9 @@ def segmentar_imagenes_wholetumor(input_dir: str, output_dir: str, identificador
                 "--wholetumor"
             ]
 
-            print(f"Comenzando segmentacion wholetumor para: NN-0{xx} (Vista_{zz})...")
+            print(f"Comenzando segmentacion wholetumor para: NN-0{xx} (Visita_{zz})...")
             subprocess.run(comando, check=True)
-            print(f"Se segmento correctamente con wholetumor para: NN-0{xx} (Vista_{zz})!")
+            print(f"Se segmento correctamente con wholetumor para: NN-0{xx} (Visita_{zz})!")
             print(f"Hay tumor: {hay_tumor(argumento_o)}")
             
 
